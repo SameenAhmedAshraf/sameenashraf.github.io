@@ -27,9 +27,9 @@ title: "Home"
 
     <div class="about-text">
       <h1>Hey, I'm Sameen Ahmed Ashraf 👋</h1>
-      <p class="subtitle">Data Analyst | Data Engineer | Analytics Enthusiast</p>
-      <p class="bio">Transforming data into actionable insights. I specialize in building end-to-end data pipelines, developing interactive dashboards, and applying machine learning to solve real-world problems. Currently exploring advanced analytics and AI-driven decision-making.</p>
-      <p><strong>Core skills:</strong> Python · SQL · Tableau · Data Analytics · ETL · Machine Learning · AWS · GCP</p>
+      <p class="subtitle">Data Engineer | Data Plumber | Professional Pattern Spotter</p>
+      <p class="bio">Transforming raw data into actionable insights. I specialize in building end-to-end data pipelines, developing interactive dashboards, and applying machine learning to solve real-world problems. Currently exploring advanced analytics and AI-driven decision-making.</p>
+      <p><strong>Core skills:</strong> Python · SQL · Tableau · PowerBi · Spark · ETL · ML · AWS · AI</p>
 
       <p class="social-links">
         <a href="https://www.linkedin.com/in/sameen-ahmed-ashraf/" target="_blank" aria-label="LinkedIn">
