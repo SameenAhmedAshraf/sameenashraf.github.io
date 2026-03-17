@@ -9,7 +9,7 @@
 
 - title: "StockX Product Analysis"
   link: "https://public.tableau.com/app/profile/sameen.ahmed.ashraf/viz/StockXProductAnalysis/StoryBoard"
-  description: "Comprehensive analysis of StockX product data with interactive visualizations and market insights."
+  description: "An end-to-end data storytelling project that leverages Tableau to deconstruct 4 years of StockX secondary market transactions, identifying the 'Hypeconomics' behind price volatility, regional demand, and brand profitability margins"
   stack: "Tableau · Data Analytics · Visualization"
   image: "/assets/images/StoryBoard.png"
   screenshot: "/assets/images/StoryBoard.png"
