@@ -1,5 +1,11 @@
 # Add your GitHub projects here
 # Example template - update with your actual projects
+- title: "Yield Analysis Dashboard"
+  link: "https://github.com/SameenAhmedAshraf/yield_analysis"
+  description: "Interactive analytics dashboard for yield analysis with real-time data processing and visualizations."
+  stack: "Python · Pandas · SQL · ETL · Streamlit · Docker"
+  image: "/assets/images/yeild.png"
+  screenshot: "/assets/images/yeild.png"
 
 - title: "StockX Product Analysis"
   link: "https://public.tableau.com/app/profile/sameen.ahmed.ashraf/viz/StockXProductAnalysis/StoryBoard"
@@ -8,13 +14,6 @@
   image: "/assets/images/StoryBoard.png"
   screenshot: "/assets/images/StoryBoard.png"
 
-- title: "Yield Analysis Dashboard"
-  link: "https://github.com/SameenAhmedAshraf/yield_analysis"
-  description: "Interactive analytics dashboard for yield analysis with real-time data processing and visualizations."
-  stack: "Python · Pandas · SQL · ETL · Streamlit · Docker"
-  image: "/assets/images/yeild.png"
-  screenshot: "/assets/images/yeild.png"
-
 - title: "Poke Visualization"
   link: "https://github.com/SameenAhmedAshraf/PokeVisualization"
   description: "Comprehensive Pokémon data analysis with interactive dashboard and detailed visualizations. Features type distribution analysis, stat correlations, generation trends, and legendary Pokémon comparisons."
@@ -22,3 +21,9 @@
   image: "/assets/images/pokeviz.png"
   screenshot: "/assets/images/pokeviz.png"
 
+- title: "Auxillum ML Model"
+  link: "https://devpost.com/software/algoauxilium?_gl=1*4apvd3*_gcl_au*MTM4MDUwMDgxNC4xNzczNzYxNTk4*_ga*NzQwNjM1ODAyLjE3NzM3NjE1OTg.*_ga_0YHJK3Y10M*czE3NzM3NjE1OTgkbzEkZzAkdDE3NzM3NjE1OTgkajYwJGwwJGgw"
+  description: "An ML engine that uses tuned Decision Tree classifiers to eliminate resource allocation bias, replacing 'first-come' systems with data-driven socioeconomic prioritization."
+  stack: "Python · Scikit-Learn · Pandas · AWS DynamoDB · SQL · NoSQL"
+  image: "/assets/images/aux.png"
+  screenshot: "/assets/images/aux.png"
