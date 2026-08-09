@@ -18,6 +18,8 @@
 // To stop: toggle that automation off (or delete it).
 
 const JOB_FILE = "parkauto-job.json";
+const LOG_FILE = "parkauto-log.json";
+const LOG_MAX = 30;
 
 // Timer.schedule works in every Scriptable context, including headless
 // Shortcuts automation runs where global setTimeout is not defined.
@@ -109,6 +111,48 @@ async function notify(title, body) {
   } catch (e) {}
 }
 
+// Persistent run history — the only reliable record when testing fast
+// (headless runs send no UI, and repeated notifications get collapsed).
+function shortTime(d) {
+  return d.getHours().toString().padStart(2, "0") + ":" +
+    d.getMinutes().toString().padStart(2, "0") + ":" +
+    d.getSeconds().toString().padStart(2, "0");
+}
+function appendLog(mode, title, body) {
+  try {
+    const f = fm();
+    const p = f.joinPath(f.documentsDirectory(), LOG_FILE);
+    let entries = [];
+    if (f.fileExists(p)) {
+      try { if (f.downloadFileFromiCloud) f.downloadFileFromiCloud(p); } catch (e) {}
+      try { entries = JSON.parse(f.readString(p)) || []; } catch (e) { entries = []; }
+    }
+    entries.unshift({ t: shortTime(new Date()), mode: mode, title: title, body: body });
+    entries = entries.slice(0, LOG_MAX);
+    f.writeString(p, JSON.stringify(entries));
+  } catch (e) {}
+}
+function readLog() {
+  try {
+    const f = fm();
+    const p = f.joinPath(f.documentsDirectory(), LOG_FILE);
+    if (!f.fileExists(p)) return [];
+    return JSON.parse(f.readString(p)) || [];
+  } catch (e) { return []; }
+}
+async function showLog() {
+  const entries = readLog();
+  const a = new Alert();
+  a.title = "ParkAuto — recent runs";
+  a.message = entries.length
+    ? entries.slice(0, 12).map(e =>
+        e.t + " [" + e.mode + "] " + e.title + (e.body ? " — " + e.body.split("\n")[0] : "")
+      ).join("\n")
+    : "No runs recorded yet. Trigger ParkAuto (e.g. from the test Shortcut) and check back.";
+  a.addAction("OK");
+  await a.present();
+}
+
 async function main() {
   let job = await loadJob();
 
@@ -146,11 +190,13 @@ async function main() {
         "\n\n" + durationLine(job) +
         "\n\nTo change people or length: select in PARK_OS, tap RUN PARKFILL, then run ParkAuto again.";
       a.addAction("Run now");
+      a.addAction("View recent runs");
       a.addAction("Delete daily job");
       a.addCancelAction("Close");
       const c = await a.present();
       if (c === -1) return;
-      if (c === 1) {
+      if (c === 1) { await showLog(); return; }
+      if (c === 2) {
         deleteJob();
         const d = new Alert();
         d.title = "ParkAuto";
@@ -164,13 +210,18 @@ async function main() {
       a.title = "ParkAuto — no daily job yet";
       a.message = "In PARK_OS: pick your complex, tap the cars to register daily, tap RUN PARKFILL — then run ParkAuto again to save it.";
       a.addAction("OK");
-      await a.present();
+      a.addAction("View recent runs");
+      const c = await a.present();
+      if (c === 1) await showLog();
       return;
     }
   }
 
+  const mode = config.runsInApp ? "app" : "auto";
+
   // Background (automation) run: need a saved job
   if (!job) {
+    appendLog(mode, "⚠ no daily job", "");
     await notify("ParkAuto ⚠ no daily job", "Open PARK_OS, select cars, RUN PARKFILL, then run ParkAuto once to save the job.");
     Script.complete();
     return;
@@ -178,6 +229,7 @@ async function main() {
 
   // Run window over? Stop by itself (one final notification, then silence).
   if (job.endDate && isoDay(new Date()) > job.endDate) {
+    appendLog(mode, "✅ window ended", job.endDate);
     if (!job.doneNotified) {
       job.doneNotified = true;
       saveJob(job);
@@ -193,6 +245,7 @@ async function main() {
   try {
     await wv.loadURL(job.url);
   } catch (e) {
+    appendLog(mode, "✗ page load failed", String(e));
     await notify("ParkAuto ✗", "Could not load register2park: " + e);
     Script.complete();
     return;
@@ -215,6 +268,7 @@ async function main() {
 
   const ok = lines.every(l => /registered/.test(l)) && lines.length === job.cars.length;
   const tail = job.endDate ? "\n" + durationLine(job) : "";
+  appendLog(mode, ok ? "✓ registered" : "⚠ check needed", lines.join(" | "));
   await notify(ok ? "ParkAuto ✓ registered" : "ParkAuto ⚠ check needed", lines.join("\n") + tail);
 
   if (config.runsInApp) await wv.present(false);
@@ -415,6 +469,7 @@ function masterScript(url, apt, code, cars) {
 main().catch(async (e) => {
   const msg = String(e && e.message ? e.message : e) +
     (e && e.lineNumber ? "  (line " + e.lineNumber + ")" : "");
+  appendLog(config.runsInApp ? "app" : "auto", "✗ crashed", msg);
   if (config.runsInApp) {
     const a = new Alert();
     a.title = "ParkAuto — error";
